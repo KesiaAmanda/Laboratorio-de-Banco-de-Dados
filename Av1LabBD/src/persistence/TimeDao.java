@@ -41,7 +41,7 @@ public class TimeDao {
 	public List<Time> selectGrupo(String grupo) throws SQLException {
 		String sql = 	"SELECT	nome_time, num_jogos_disputados, vitorias, empates, derrotas, " + 
 						"gols_marcados, gols_sofridos, saldo_gols, pontos " + 
-						"FROM fn_tabClassficacao(?)  " + 
+						"FROM fn_tabClassificacao(?)  " + 
 						"ORDER BY pontos DESC, vitorias DESC, gols_marcados DESC, saldo_gols DESC";
 		PreparedStatement ps = c.prepareStatement(sql);
 		ps.setString(1, grupo);

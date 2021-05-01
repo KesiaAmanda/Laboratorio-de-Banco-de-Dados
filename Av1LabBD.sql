@@ -569,7 +569,7 @@ AS
 BEGIN
 	INSERT INTO @table (nome_time)
 			SELECT	TOP 4 nome_time 
-					FROM fn_tabClassficacao('') 
+					FROM fn_tabClassificacao('') 
 					WHERE num_jogos_disputados > 0
 					ORDER BY pontos, vitorias, gols_marcados, saldo_gols
 	RETURN
@@ -705,7 +705,7 @@ AS
 BEGIN
 	DECLARE @nome_time VARCHAR(50)
 	DECLARE c CURSOR FOR SELECT TOP 2 nome_time
-							FROM fn_tabClassficacao(@grupo)
+							FROM fn_tabClassificacao(@grupo)
 							WHERE num_jogos_disputados > 0
 							ORDER BY pontos DESC, vitorias DESC, gols_marcados DESC, saldo_gols DESC
 
