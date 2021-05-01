@@ -38,12 +38,14 @@ public class ServletGrupos extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String saida = "";
 		try {
 			GrupoDao gDao = new GrupoDao();
 			gDao.gerarGrupos();
 		} catch (ClassNotFoundException | SQLException | IOException e) {
-			e.printStackTrace();
+			saida = e.getMessage();
 		} finally {
+			request.setAttribute("saida", saida);
 			doGet(request, response);
 		}	
 	}

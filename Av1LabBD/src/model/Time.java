@@ -1,11 +1,13 @@
 package model;
 
+
 public class Time {
 	private int codigoTime;
 	private String nomeTime;
 	private String cidade;
 	private String estadio;
 	private Grupo grupo;
+	private Classificacao classificacao;
 	
 	public int getCodigoTime() {
 		return codigoTime;
@@ -36,5 +38,11 @@ public class Time {
 	}
 	public void setGrupo(Grupo grupo) {
 		this.grupo = grupo;
+	}
+	public Classificacao getClassificacao() {
+		return classificacao;
+	}
+	public void setClassificacao(Classificacao classificacao) {
+		this.classificacao = classificacao;
 	}
 }

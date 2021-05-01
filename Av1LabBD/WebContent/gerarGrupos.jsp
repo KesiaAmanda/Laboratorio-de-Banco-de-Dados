@@ -44,6 +44,9 @@
 				</table>
 				</c:forEach>
 			</c:if>
+			<c:if test="${not empty saida}">
+				<tr><c:out value="${saida}"></c:out></tr>
+			</c:if>
 		</form>
 	</div>
 </body>

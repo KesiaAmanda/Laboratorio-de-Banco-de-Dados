@@ -42,8 +42,8 @@ GO
 CREATE TABLE Jogos(
 CodigoTimeA	INT,
 CodigoTimeB INT,
-GolsTimeA	INT,
-GolsTimeB	INT,
+GolsTimeA	INT DEFAULT(0),
+GolsTimeB	INT DEFAULT(0),
 DataJogo	DATE
 PRIMARY KEY (CodigoTimeA,CodigoTimeB)
 FOREIGN KEY (CodigoTimeA) REFERENCES Times (Codigo),
@@ -357,11 +357,15 @@ AS
 		SET @aux = (SELECT COUNT(DataJogo) FROM Jogos)
 	END
 
+	ALTER TABLE Grupos DISABLE TRIGGER t_validaGrupo
+	ALTER TABLE Grupos ENABLE TRIGGER t_blockGrupos
+
 	SET @saida = 'Os jogos foram definidos com sucesso!'
 
 -----------------------------------------------------------------------------------------
 --FUNÇÕES QUE RETORNAM TABELAS DE SAIDA--------------------------------------------------
 -----------------------------------------------------------------------------------------
+GO
 
 CREATE FUNCTION fn_tabGruposFormados()
 RETURNS @table TABLE (

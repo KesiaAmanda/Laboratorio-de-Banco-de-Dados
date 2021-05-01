@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import model.Jogos;
-import persistence.JogosDao;
+import model.Jogo;
+import persistence.JogoDao;
 
 @WebServlet("/MostrarJogos")
 public class ServletJogos extends HttpServlet {
@@ -33,13 +33,13 @@ public class ServletJogos extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<Jogos> jogos = new ArrayList<Jogos>();
+		List<Jogo> jogos = new ArrayList<Jogo>();
 		String saida = "";
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate dt = LocalDate.parse(request.getParameter("dataJogo"), dtf);
 				
 		try {
-			JogosDao jDao = new JogosDao();
+			JogoDao jDao = new JogoDao();
 			jogos.addAll(jDao.selecionarJogos(dt));
 		} catch (ClassNotFoundException | SQLException | IOException e) {
 			saida = e.getMessage();

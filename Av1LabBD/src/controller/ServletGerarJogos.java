@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import persistence.JogosDao;
+import persistence.JogoDao;
 
 @WebServlet("/GerarJogos")
 public class ServletGerarJogos extends HttpServlet{
@@ -30,7 +30,7 @@ public class ServletGerarJogos extends HttpServlet{
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String saida = "";
 		try {
-			JogosDao jDao = new JogosDao();
+			JogoDao jDao = new JogoDao();
 			saida = jDao.gerarJogos();
 		} catch (ClassNotFoundException | SQLException | IOException e) {
 			saida = e.getMessage();
