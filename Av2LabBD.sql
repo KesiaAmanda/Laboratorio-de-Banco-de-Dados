@@ -1,3 +1,13 @@
+--_____/\\\\\\\\\___________________/\\\_____________________________/\\\_________/\\\\\\\\\\\\\____/\\\\\\\\\\\\________/\\\\\\\_______/\\\\\\\\\_____        
+-- ___/\\\\\\\\\\\\\________________\/\\\____________________________\/\\\________\/\\\/////////\\\_\/\\\////////\\\____/\\\/////\\\___/\\\///////\\\___       
+--  __/\\\/////////\\\_______________\/\\\____________________________\/\\\________\/\\\_______\/\\\_\/\\\______\//\\\__/\\\____\//\\\_\///______\//\\\__      
+--   _\/\\\_______\/\\\__/\\\____/\\\_\/\\\______________/\\\\\\\\\____\/\\\________\/\\\\\\\\\\\\\\__\/\\\_______\/\\\_\/\\\_____\/\\\___________/\\\/___     
+--    _\/\\\\\\\\\\\\\\\_\//\\\__/\\\__\/\\\_____________\////////\\\___\/\\\\\\\\\__\/\\\/////////\\\_\/\\\_______\/\\\_\/\\\_____\/\\\________/\\\//_____    
+--     _\/\\\/////////\\\__\//\\\/\\\___\/\\\_______________/\\\\\\\\\\__\/\\\////\\\_\/\\\_______\/\\\_\/\\\_______\/\\\_\/\\\_____\/\\\_____/\\\//________   
+--      _\/\\\_______\/\\\___\//\\\\\____\/\\\______________/\\\/////\\\__\/\\\__\/\\\_\/\\\_______\/\\\_\/\\\_______/\\\__\//\\\____/\\\____/\\\/___________  
+--      _\/\\\_______\/\\\____\//\\\_____\/\\\\\\\\\\\\\\\_\//\\\\\\\\/\\_\/\\\\\\\\\__\/\\\\\\\\\\\\\/__\/\\\\\\\\\\\\/____\///\\\\\\\/____/\\\\\\\\\\\\\\\_ 
+--        _\///________\///______\///______\///////////////___\////////\//__\/////////___\/////////////____\////////////________\///////_____\///////////////__
+
 /*criar uma Trigger que não permita INSERT, UPDATE ou
 DELETE nas tabelas TIMES e GRUPOS e uma Trigger semelhante, mas apenas para INSERT e
 DELETE na tabela jogos.*/
@@ -109,27 +119,6 @@ AS
 	BEGIN
 		RAISERROR('Dados fornecidos são invalidos!', 16, 1)
 	END
-GO
-
-ALTER FUNCTION fn_tabJogos(@dataJogo DATE)
-RETURNS @table TABLE (
-CodigoTimeA		INT,
-NomeTimeA		VARCHAR(50),
-CodigoTimeB		INT,
-NomeTimeB		VARCHAR(50)
-)
-AS
-BEGIN
-	INSERT INTO @table (CodigoTimeA, NomeTimeA, CodigoTimeB, NomeTimeB)
-		SELECT Jogos.CodigoTimeA, NomeTimeA.NomeTime, Jogos.CodigoTimeB, NomeTimeB.NomeTime 
-		FROM Times AS NomeTimeA 
-		INNER JOIN Jogos
-		ON NomeTimeA.Codigo = Jogos.CodigoTimeA
-		INNER JOIN Times AS NomeTimeB 
-		ON NomeTimeB.Codigo = Jogos.CodigoTimeB
-		WHERE Jogos.DataJogo = @dataJogo
-	RETURN
-END
 
 GO
 
@@ -145,8 +134,24 @@ saída, para os 20 times do campeonato:
 CAMPEONATO (nome_time, num_jogos_disputados*, vitorias, empates, derrotas,
 gols_marcados, gols_sofridos, saldo_gols**,pontos***)*/
 -----------------------------------------------------------------------------------------------
+GO
 
-CREATE FUNCTION fn_tabClassficacao(@grupo VARCHAR(1))
+CREATE FUNCTION fn_tabRebaixados()
+RETURNS @table TABLE (
+nome_time				VARCHAR(50))
+AS
+BEGIN
+	INSERT INTO @table (nome_time)
+			SELECT	TOP 4 nome_time 
+					FROM fn_tabClassificacao('') 
+					WHERE num_jogos_disputados > 0
+					ORDER BY pontos, vitorias, gols_marcados, saldo_gols
+	RETURN
+END
+
+GO
+
+CREATE FUNCTION fn_tabClassificacao(@grupo VARCHAR(1))
 RETURNS @table TABLE (
 nome_time				VARCHAR(50),
 num_jogos_disputados	INT,
@@ -274,7 +279,8 @@ AS
 BEGIN
 	DECLARE @nome_time VARCHAR(50)
 	DECLARE c CURSOR FOR SELECT TOP 2 nome_time
-							FROM fn_tabClassficacao(@grupo)
+							FROM fn_tabClassificacao(@grupo)
+							WHERE num_jogos_disputados > 0
 							ORDER BY pontos DESC, vitorias DESC, gols_marcados DESC, saldo_gols DESC
 
 	OPEN c
